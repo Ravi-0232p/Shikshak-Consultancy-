@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Available Tutor Leads | SHIKSHAK CONSULTANCY</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<a class="brand" href="index.html">SHIKSHAK <span>CONSULTANCY</span><small>A Product of Mishra Industries</small></a>
+<nav>
+<a href="index.html">Home</a>
+<a href="parents.html">Parents</a>
+<a href="teachers.html">Teachers</a>
+<a href="leads.html">Available Leads</a>
+</nav>
+</header>
+
+<main class="content">
+<h1>Available Teaching Opportunities</h1>
+<p>Explore active tutor requirements and send your enquiry to our consultancy. Parent contact details and exact addresses are not displayed.</p>
+<p id="status" class="note">Loading leads...</p>
+<div id="lead-list" class="cards"></div>
+</main>
+
+<footer>
+<b>SHIKSHAK CONSULTANCY</b>
+<p>A Product of Mishra Industries</p>
+<p>Teacher Support: <a href="https://wa.me/917393811693">7393811693</a></p>
+</footer>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbw4SVIn_jqj2hcW7oyWu8tups_2hRrymQ6rAUADKjvU6vJX1t4gZbJeEiA7xa_pNlKd/exec";
+
+function showLeads(data) {
+  const status = document.getElementById("status");
+  const list = document.getElementById("lead-list");
+
+  if (!data || !data.success) {
+    status.textContent = "Unable to load leads. Please refresh.";
+    return;
+  }
+
+  list.innerHTML = "";
+
+  if (!data.leads.length) {
+    status.textContent = "No active leads currently available.";
+    return;
+  }
+
+  status.textContent = data.leads.length + " active teaching opportunities";
+
+  data.leads.forEach(lead => {
+    const card = document.createElement("article");
+
+    const fields = [
+      ["Lead ID", lead.leadId],
+      ["Location", lead.location],
+      ["Class", lead.className],
+      ["Subjects", lead.subjects],
+      ["Preference", lead.preference],
+      ["Timing", lead.timing],
+      ["Budget", lead.budget]
+    ];
+
+    fields.forEach(([label, value]) => {
+      if (value) {
+        const p = document.createElement("p");
+        const b = document.createElement("b");
+        b.textContent = label + ": ";
+        p.append(b, document.createTextNode(value));
+        card.appendChild(p);
+      }
+    });
+
+    const name = document.createElement("input");
+    name.placeholder = "Your name";
+
+    const phone = document.createElement("input");
+    phone.placeholder = "Your WhatsApp number";
+    phone.inputMode = "tel";
+
+    const button = document.createElement("button");
+    button.className = "btn";
+    button.textContent = "Send Enquiry";
+
+    button.onclick = function () {
+      if (!name.value.trim() || !phone.value.trim()) {
+        alert("Please enter your name and WhatsApp number.");
+        return;
+      }
+
+      const message =
+        "SHIKSHAK CONSULTANCY - Teacher Enquiry\n" +
+        "Lead ID: " + lead.leadId + "\n" +
+        "Teacher Name: " + name.value.trim() + "\n" +
+        "Teacher WhatsApp: " + phone.value.trim() + "\n" +
+        "I am interested in this teaching requirement.";
+
+      window.open(
+        "https://wa.me/917393811693?text=" +
+        encodeURIComponent(message),
+        "_blank"
+      );
+    };
+
+    card.append(name, phone, button);
+    list.appendChild(card);
+  });
+}
+
+const script = document.createElement("script");
+script.src = API + "?callback=showLeads";
+script.onerror = function () {
+  document.getElementById("status").textContent =
+    "Unable to connect. Please refresh the page.";
+};
+document.body.appendChild(script);
+</script>
+</body>
+</html>
