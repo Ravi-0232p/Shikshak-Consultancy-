@@ -1,1 +1,183 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Parent Enquiry | SHIKSHAK CONSULTANCY</title><link rel="stylesheet" href="style.css"></head><body><header><a class="brand" href="index.html">SHIKSHAK <span>CONSULTANCY</span><small>A Product of Mishra Industries</small></a><nav><a href="index.html">Home</a><a href="services.html">Services</a><a href="teachers.html">Teachers</a><a href="contact.html">Contact</a></nav></header><main class="content"><h1>Find a Home Tutor</h1><p>Fill in your requirement. Your details will be prepared as a WhatsApp message to our parent enquiry team.</p><form data-whatsapp="917348732205"><label>Parent name</label><input name="Parent name" required><label>Mobile number</label><input name="Mobile number" required><label>Area / locality</label><input name="Area" required><label>Class</label><input name="Class" required><label>Subjects</label><input name="Subjects" required><label>Preferred days and timing</label><input name="Timing"><label>Monthly budget</label><input name="Budget"><button class="btn" type="submit">Send enquiry on WhatsApp</button></form><p class="note">Submitting opens WhatsApp. This static website does not store form entries.</p></main><script src="main.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parent Enquiry | SHIKSHAK CONSULTANCY</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <a class="brand" href="index.html">
+    SHIKSHAK <span>CONSULTANCY</span>
+    <small>A Product of Mishra Industries</small>
+  </a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="services.html">Services</a>
+    <a href="teachers.html">Teachers</a>
+    <a href="leads.html">Available Leads</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<main class="content">
+  <h1>Find a Home Tutor</h1>
+  <p>Share your requirement. Our consultancy team will contact you.</p>
+
+  <form id="parent-form">
+
+    <label>Parent Name *</label>
+    <input name="parentName" required>
+
+    <label>Mobile / WhatsApp Number *</label>
+    <input name="parentWhatsApp" type="tel" inputmode="tel" required>
+
+    <label>Area / Locality *</label>
+    <input name="location" required>
+
+    <label>Class *</label>
+    <input name="className" required>
+
+    <label>Subjects Required *</label>
+    <input name="subjects" required>
+
+    <label>Preferred Teacher</label>
+    <select name="preference">
+      <option value="">No preference</option>
+      <option value="Female">Female</option>
+      <option value="Male">Male</option>
+    </select>
+
+    <label>Preferred Days</label>
+    <input name="days" placeholder="e.g. Monday to Friday">
+
+    <label>Preferred Timing</label>
+    <input name="timing" placeholder="e.g. 4 PM to 6 PM">
+
+    <label>Class Duration</label>
+    <input name="duration" placeholder="e.g. 1 hour">
+
+    <label>Monthly Budget</label>
+    <input name="budget" placeholder="e.g. ₹3000–₹5000">
+
+    <button class="btn" id="submit-btn" type="submit">
+      Submit Parent Enquiry
+    </button>
+
+  </form>
+
+  <p id="form-status" class="note">
+    Your contact details are kept private and are not shown on the public Lead Board.
+  </p>
+</main>
+
+<footer>
+  <b>SHIKSHAK CONSULTANCY</b>
+  <p>A Product of Mishra Industries</p>
+  <p>Parent Support:
+    <a href="https://wa.me/917348732205">7348732205</a>
+  </p>
+</footer>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbw4SVIn_jqj2hcW7oyWu8tups_2hRrymQ6rAUADKjvU6vJX1t4gZbJeEiA7xa_pNlKd/exec";
+
+const form = document.getElementById("parent-form");
+const submitBtn = document.getElementById("submit-btn");
+const statusBox = document.getElementById("form-status");
+
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  const data = new FormData(form);
+  const phone = String(data.get("parentWhatsApp") || "").trim();
+  const digits = phone.replace(/\D/g, "");
+
+  if (digits.length < 10 || digits.length > 13) {
+    alert("Please enter a valid WhatsApp number.");
+    return;
+  }
+
+  const payload = {
+    action: "parentEnquiry",
+    parentName: String(data.get("parentName") || "").trim(),
+    parentWhatsApp: phone,
+    location: String(data.get("location") || "").trim(),
+    className: String(data.get("className") || "").trim(),
+    subjects: String(data.get("subjects") || "").trim(),
+    preference: String(data.get("preference") || ""),
+    days: String(data.get("days") || ""),
+    timing: String(data.get("timing") || ""),
+    duration: String(data.get("duration") || ""),
+    budget: String(data.get("budget") || "")
+  };
+
+  const message = [
+    "SHIKSHAK CONSULTANCY - New Parent Enquiry",
+    "",
+    "Parent Name: " + payload.parentName,
+    "WhatsApp: " + payload.parentWhatsApp,
+    "Location: " + payload.location,
+    "Class: " + payload.className,
+    "Subjects: " + payload.subjects,
+    "Preference: " + payload.preference,
+    "Days: " + payload.days,
+    "Timing: " + payload.timing,
+    "Duration: " + payload.duration,
+    "Budget: " + payload.budget
+  ].join("\n");
+
+  const whatsappURL =
+    "https://wa.me/917348732205?text=" +
+    encodeURIComponent(message);
+
+  const whatsappTab = window.open("about:blank", "_blank");
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+
+  fetch(API, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain;charset=UTF-8"
+    },
+    body: JSON.stringify(payload),
+    keepalive: true
+  }).then(function() {
+    statusBox.textContent =
+      "Enquiry submission request sent. Please complete your WhatsApp message. We will verify the Sheet record separately.";
+
+    submitBtn.textContent = "Request Submitted";
+
+    if (whatsappTab) {
+      whatsappTab.location.href = whatsappURL;
+    } else {
+      window.location.href = whatsappURL;
+    }
+
+  }).catch(function() {
+    statusBox.textContent =
+      "Submission could not be confirmed. Please contact our team on WhatsApp.";
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Try Again";
+
+    if (whatsappTab) {
+      whatsappTab.location.href = whatsappURL;
+    } else {
+      window.location.href = whatsappURL;
+    }
+  });
+});
+</script>
+
+</body>
+</html>
