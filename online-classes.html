@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Online Classes | SHIKSHAK CONSULTANCY</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6f8;
+      color: #202938;
+    }
+
+    .class-header {
+      background: #172334;
+      color: white;
+      padding: 20px 16px;
+      text-align: center;
+    }
+
+    .class-header h1 {
+      margin: 0 0 7px;
+      color: #f5a623;
+      font-size: 25px;
+    }
+
+    .class-header p {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .class-nav {
+      background: #24364c;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .class-nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 9px;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+
+    .intro, .panel, .meeting-panel {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.06);
+    }
+
+    h2 { color: #172334; }
+
+    .field {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccd2da;
+      border-radius: 7px;
+      margin: 8px 0 15px;
+      font-size: 16px;
+    }
+
+    .btn {
+      display: inline-block;
+      border: none;
+      border-radius: 7px;
+      padding: 13px 18px;
+      margin: 5px 5px 5px 0;
+      background: #f5a623;
+      color: #172334;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: #172334;
+      color: white;
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .notice {
+      background: #fff5df;
+      border-left: 4px solid #f5a623;
+      padding: 12px;
+      border-radius: 5px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    #roomDisplay {
+      display: none;
+      background: #eef3f9;
+      padding: 13px;
+      border-radius: 7px;
+      margin: 15px 0;
+      overflow-wrap: anywhere;
+    }
+
+    #meeting {
+      display: none;
+      width: 100%;
+      height: 650px;
+      background: #111;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .class-footer {
+      background: #172334;
+      color: white;
+      text-align: center;
+      padding: 22px 12px;
+      font-size: 13px;
+      margin-top: 35px;
+    }
+
+    @media(max-width:600px) {
+      .class-nav a {
+        display: inline-block;
+        margin: 6px;
+      }
+
+      #meeting { height: 570px; }
+
+      .intro, .panel, .meeting-panel {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="class-header">
+  <h1>SHIKSHAK CONSULTANCY</h1>
+  <p>Live Online Classroom | Classes 1–12</p>
+  <p>A Product of Mishra Industries</p>
+</header>
+
+<nav class="class-nav">
+  <a href="index.html">Home</a>
+  <a href="parents.html">For Parents</a>
+  <a href="index.html#contact">Contact</a>
+</nav>
+
+<main class="container">
+
+  <section class="intro">
+    <h2>Live Online Classes</h2>
+    <p>
+      Learn from experienced tutors through live interactive online classes.
+      Connect with your teacher through video, audio, chat and screen sharing.
+    </p>
+
+    <div class="notice">
+      <strong>Important:</strong> This is a free pilot classroom using
+      the public Jitsi Meet service. It is suitable for initial testing,
+      not a secure production classroom.
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Join Your Classroom</h2>
+
+    <label for="personName"><strong>Your Name</strong></label>
+    <input
+      id="personName"
+      class="field"
+      type="text"
+      placeholder="Enter your name"
+      maxlength="50"
+      autocomplete="name"
+    >
+
+    <label for="roomCode"><strong>Class Room Code</strong></label>
+    <input
+      id="roomCode"
+      class="field"
+      type="text"
+      placeholder="Enter the code shared by your teacher"
+      maxlength="100"
+    >
+
+    <button class="btn" onclick="createClass()">
+      Create New Class (Teacher)
+    </button>
+
+    <button class="btn btn-secondary" onclick="joinClass()">
+      Join Class (Student)
+    </button>
+
+    <div id="roomDisplay">
+      <strong>Your Class Room Code:</strong>
+      <p id="generatedCode"></p>
+      <button class="btn btn-secondary" onclick="copyRoomCode()">
+        Copy Room Code
+      </button>
+      <p>Share this code privately with your assigned student.</p>
+    </div>
+  </section>
+
+  <section class="meeting-panel">
+    <h2>Live Classroom</h2>
+    <div id="meeting"></div>
+
+    <button
+      id="whiteboardButton"
+      class="btn"
+      style="display:none"
+      onclick="openWhiteboard()"
+    >
+      Open Live Whiteboard
+    </button>
+
+    <p id="meetingHelp">
+      Your video classroom will appear here after you create or join a class.
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>How to Use the Whiteboard</h2>
+    <ol>
+      <li>Start or join your video class.</li>
+      <li>Click the Open Live Whiteboard button.</li>
+      <li>In Excalidraw, choose Share and start a collaboration session.</li>
+      <li>Copy the collaboration link.</li>
+      <li>Send that link to your student through Jitsi chat.</li>
+      <li>Both teacher and student can draw and write together.</li>
+    </ol>
+    <p class="notice">
+      The whiteboard opens in a separate browser tab. It is not embedded
+      inside the video classroom.
+    </p>
+  </section>
+
+</main>
+
+<footer class="class-footer">
+  <strong>SHIKSHAK CONSULTANCY</strong><br>
+  A Product of Mishra Industries<br>
+  Parent & Student Enquiries: 7348732205
+</footer>
+
+<script src="https://meet.jit.si/external_api.js"></script>
+
+<script>
+  let jitsiApi = null;
+  let currentRoomCode = "";
+
+  function getName() {
+    const name = document.getElementById("personName").value.trim();
+
+    if (!name) {
+      alert("Please enter your name.");
+      return null;
+    }
+
+    return name;
+  }
+
+  function createClass() {
+    const name = getName();
+    if (!name) return;
+
+    const randomPart = Math.random().toString(36).substring(2, 10);
+    const room = "shikshak-class-" + randomPart;
+
+    document.getElementById("roomCode").value = room;
+    document.getElementById("generatedCode").textContent = room;
+    document.getElementById("roomDisplay").style.display = "block";
+
+    startMeeting(name, room);
+  }
+
+  function joinClass() {
+    const name = getName();
+    if (!name) return;
+
+    const room = document.getElementById("roomCode").value.trim();
+
+    if (!room) {
+      alert("Please enter your classroom code.");
+      return;
+    }
+
+    startMeeting(name, room);
+  }
+
+  function startMeeting(name, room) {
+    if (typeof JitsiMeetExternalAPI === "undefined") {
+      alert("Video classroom could not load. Please check your internet connection and try again.");
+      return;
+    }
+
+    if (jitsiApi) {
+      jitsiApi.dispose();
+      jitsiApi = null;
+    }
+
+    currentRoomCode = room;
+
+    const meetingBox = document.getElementById("meeting");
+    meetingBox.style.display = "block";
+    document.getElementById("meetingHelp").style.display = "none";
+    document.getElementById("whiteboardButton").style.display = "inline-block";
+
+    jitsiApi = new JitsiMeetExternalAPI("meet.jit.si", {
+      roomName: room,
+      parentNode: meetingBox,
+      width: "100%",
+      height: "100%",
+      userInfo: {
+        displayName: name
+      },
+      configOverwrite: {
+        prejoinPageEnabled: false,
+        disableDeepLinking: true
+      },
+      interfaceConfigOverwrite: {
+        TOOLBAR_BUTTONS: [
+          "microphone",
+          "camera",
+          "desktop",
+          "chat",
+          "raisehand",
+          "tileview",
+          "fullscreen",
+          "hangup"
+        ]
+      }
+    });
+
+    jitsiApi.addEventListener("readyToClose", function() {
+      meetingBox.style.display = "none";
+      document.getElementById("whiteboardButton").style.display = "none";
+      document.getElementById("meetingHelp").style.display = "block";
+      jitsiApi = null;
+    });
+  }
+
+  function copyRoomCode() {
+    if (!currentRoomCode) return;
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(currentRoomCode)
+        .then(() => alert("Class room code copied!"))
+        .catch(() => alert("Please copy the code manually: " + currentRoomCode));
+    } else {
+      alert("Please copy the code manually: " + currentRoomCode);
+    }
+  }
+
+  function openWhiteboard() {
+    window.open("https://excalidraw.com/", "_blank", "noopener,noreferrer");
+  }
+</script>
+
+</body>
+</html>
